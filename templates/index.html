@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Velha</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <!-- Seleção de dificuldade -->
+    <div id="difficulty-selection" class="difficulty-container">
+        <h1>Escolha o Nível de Dificuldade</h1>
+        <button class="difficulty-button" data-level="easy">Fácil</button>
+        <button class="difficulty-button" data-level="medium">Médio</button>
+        <button class="difficulty-button" data-level="hard">Difícil</button>
+    </div>
+
+    <!-- Container do jogo -->
+    <div id="game-container" class="game-container" style="display: none;">
+        <h1>Jogo da Velha</h1>
+        <div id="board" class="board"></div>
+        <button id="resetButton">Reiniciar Jogo</button>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        const boardElement = document.getElementById("board");
+        const resetButton = document.getElementById("resetButton");
+        const statusElement = document.getElementById("status");
+        const difficultySelection = document.getElementById("difficulty-selection");
+        const gameContainer = document.getElementById("game-container");
+
+        let difficultyLevel = 'easy'; // Nível padrão
+
+        // Configurar eventos de clique para os botões de dificuldade
+        document.querySelectorAll(".difficulty-button").forEach(button => {
+            button.addEventListener("click", (e) => {
+                difficultyLevel = e.target.dataset.level;
+                startGame(); // Iniciar o jogo
+            });
+        });
+
+        // Função para iniciar o jogo
+        function startGame() {
+            difficultySelection.style.display = "none"; // Esconde a tela de seleção
+            gameContainer.style.display = "block"; // Mostra o tabuleiro
+
+            // Chamada ao backend para configurar o jogo
+            fetch(`/start_game/${difficultyLevel}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => updateGameState(data))
+                .catch(err => console.error("Erro ao iniciar o jogo:", err));
+        }
+
+        // Atualizar o estado do jogo com os dados do backend
+        function updateGameState(data) {
+            const { board, winner, winning_combo, current_player } = data;
+
+            // Desenhar o tabuleiro
+            drawBoard(board, winning_combo);
+
+            if (winner) {
+                statusElement.innerText = `${winner} é o vencedor!`;
+                showConfetti(); // Exibir confetes
+            } else {
+                statusElement.innerText = `É a vez de ${current_player}`;
+            }
+        }
+
+        // Função para desenhar o tabuleiro
+        function drawBoard(board, winningCombo = null) {
+            boardElement.innerHTML = '';
+            board.forEach((cell, index) => {
+                const cellElement = document.createElement("div");
+                cellElement.classList.add("cell");
+                cellElement.innerText = cell;
+                if (winningCombo && winningCombo.includes(index)) {
+                    cellElement.classList.add("winner-cell");
+                }
+                cellElement.addEventListener('click', () => makeMove(index));
+                boardElement.appendChild(cellElement);
+            });
+        }
+
+        // Fazer um movimento no tabuleiro
+        function makeMove(position) {
+            fetch(`/make_move/${position}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => updateGameState(data))
+                .catch(err => console.error("Erro ao fazer o movimento:", err));
+        }
+
+        // Reiniciar o jogo
+        resetButton.addEventListener('click', () => {
+            fetch('/reset_game', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => updateGameState(data))
+                .catch(err => console.error("Erro ao reiniciar o jogo:", err));
+        });
+
+        // Exibir confetes ao vencer
+        function showConfetti() {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        // Finalizar o servidor ao fechar a página
+        window.addEventListener('beforeunload', () => {
+            navigator.sendBeacon('/shutdown');
+        });
+    </script>
+</body>
+</html>

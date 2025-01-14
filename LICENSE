@@ -1,0 +1,14 @@
+
+---
+
+### Explicação do `README.md`
+
+- **Funcionalidades**: Descrição das principais funcionalidades do jogo, como escolha de dificuldade, animações e lógica de jogadas.
+- **Tecnologias Utilizadas**: Detalha as tecnologias do backend e frontend.
+- **Como Jogar**: Passo a passo para o usuário começar a jogar, desde a escolha da dificuldade até a interação com o tabuleiro.
+- **Estrutura do Projeto**: Como os arquivos estão organizados no projeto.
+- **Como Executar o Projeto**: Instruções para rodar o projeto localmente em uma máquina.
+- **Exemplo de Como Funciona a Lógica**: Explicação detalhada de como o robô reage de acordo com o nível de dificuldade.
+- **Licença**: Se você decidir usar uma licença para o seu projeto, a MIT License é uma boa escolha para projetos de código aberto.
+
+Isso deve ser o suficiente para explicar o funcionamento do seu jogo da velha no `README.md`. Se precisar de mais detalhes ou ajustes, estou à disposição! 😊
