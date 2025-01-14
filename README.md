@@ -1,3 +1,6 @@
+
+![Captura de tela de 2025-01-14 10-05-38](https://github.com/user-attachments/assets/2e7f2c28-1ee8-4806-a166-9f6abd58f5ae)
+
 # Jogo da Velha (Tic-Tac-Toe)
 
 Este é um projeto simples de um **Jogo da Velha** desenvolvido com **Python** (usando Flask) para o backend e **HTML, CSS e JavaScript** para o frontend. O jogo oferece três níveis de dificuldade para o jogador competir contra o computador: **Fácil**, **Médio** e **Difícil**.
